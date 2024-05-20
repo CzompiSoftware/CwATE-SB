@@ -1,0 +1,18 @@
+<!--
+    [(${engine.fullName})] Version [(${engine.version})] Build [(${engine.build})]
+    - Compiled at [(${engine.compileTime})]
+    This product licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) license.
+
+    Copyright (c) 2020-[(${#dates.format(#dates.createNow(), 'yyyy')})] Czompi Software. All rights reserved.
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${site.defaultLang}" lang="hu">
+<head>
+    <th:block th:insert="~{fragments/layout.html::headBaseFragment}"/>
+    <th:block th:insert="~{fragments/layout.html::titleFragment}"/>
+    <th:block th:insert="~{fragments/layout.html::metadataFragment}"/>
+</head>
+<body class="line-numbers">
+    [(${page.content})]
+</body>
+</html>

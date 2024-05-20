@@ -1,0 +1,135 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="headBaseFragment">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link th:each="theme : ${site.styles}" rel="stylesheet" th:href="${theme}"/>
+
+        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/fluent-icons@v1.0.0/all.css'">
+        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.css'">
+        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.light.css'" media="(prefers-color-scheme: light)">
+        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.dark.css'" media="(prefers-color-scheme: dark)">
+
+        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+        <style>
+            .display-hidden {
+                display: none;
+            }
+        </style>
+    </th:block>
+
+    <th:block th:fragment="titleFragment">
+        <title th:if="${page.metadata.title} == null">Unnamed - [(${site.name})]</title>
+        <title th:unless="${page.metadata.title} == null">[(${page.metadata.title})] - [(${site.Name})]</title>
+    </th:block>
+
+    <th:block th:fragment="metadataFragment">
+        <!-- #region Primary metadata -->
+        <meta name="title" th:content="${page.metadata.title}">
+        <meta name="description" th:content="${page.metadata.description}">
+        <meta name="theme-color" th:content="${site.themeColor}">
+        <meta name="generator" th:content="${engine.fullName}" content="CzSoft web application" />
+        <meta name="application-name" th:content="${engine.name} + ' v' + ${engine.version}" content="A CzSoft product."/>
+        <meta name="author" th:content="${page.metadata.author}" content="Czompi Software" />
+        <!-- #endregion -->
+        <!-- #region Open Graph metadata -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" th:content="${page.url}">
+        <meta property="og:title" th:if="${page.metadata.title}" th:content="${page.metadata.title}">
+        <meta property="og:description" th:if="${page.metadata.description}" th:content="${page.metadata.description}">
+        <meta property="og:image" th:if="${page.metadata.previewImage.value}" th:content="${page.metadata.previewImage.value}">
+        <!-- #endregion -->
+        <!-- #region Twitter metadata -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" th:content="${page.url}">
+        <meta property="twitter:title" th:if="${page.metadata.title}" th:content="${page.metadata.title}">
+        <meta property="twitter:description" th:if="${page.metadata.description}" th:content="${page.metadata.description}">
+        <meta th:if="${page.metadata.previewImage.value}" property="twitter:image" th:content="${page.metadata.previewImage.value}">
+        <!-- #endregion -->
+        <style>
+            .display-hidden {
+                display: none;
+            }
+        </style>
+    </th:block>
+
+</head>
+<body class="line-numbers">
+
+<th:block th:fragment="navbarFragment">
+    <!-- #region Czompi Group products -->
+    <nav class="nav nav-sticky group" aria-label="Czompi Group">
+        <div class="container w-100" th:each="group: ${site.products}">
+            <div th:if="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
+                <span class="active" th:text="${group.name}"/>
+            </div>
+            <div th:unless="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
+                <a th:href="${group.url}" th:text="${group.name}"/>
+            </div>
+        </div>
+    </nav>
+    <!-- #endregion -->
+    <!-- #region Navigation menu -->
+    <div class="container w-100">
+        <nav class="nav menu" aria-label="Main">
+            <a th:href="${site.baseUrl}" class="brand">
+                <img th:src="${site.cdnUrl} + 'img/' + ${site.id} + '@v1.0/' + ${site.id} + '-logo.svg'">
+            </a>
+            <a class="nav-mobile" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation"></a>
+            <div class="nav-items dropdown-menu navbar-collapse collapse" aria-labelledby="navbar-main" id="navbar-main" th:each="p : ${site.pages}">
+
+                <!--                    @foreach (Metadata page in Globals.Pages.Select(itm =>-->
+                <!--                    {-->
+                <!--                    if (itm.NavMenuId == -1) itm.NavMenuId = short.Parse($"{Math.Min(Globals.Pages.Max(x => x.NavMenuId) + Globals.Pages.Count, (int)short.MaxValue)}");-->
+                <!--                    return itm;-->
+                <!--                    }).Where(x => x.IsNavMenuItem == true).OrderBy(x => x.NavMenuId).ThenBy(y => y.Id))-->
+                <!--                    {-->
+                <div th:if="${true}" class="nav-item">
+                    <a th:href="${site.baseUrl} + '/' + ${p.id}" th:class="${#strings.equalsIgnoreCase(page.metadata.id, p.id)} ? 'active': ''">
+                        [(${p.title})]
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- #endregion -->
+</th:block>
+
+<th:block th:fragment="footerFragment">
+    <footer>
+        <div class="container">
+            <div class="footer">
+                <a href="@Globals.Config.GlobalUrl" class="branding"></a>
+                <div class="buildinfo">
+                    <div class="container">
+                        <p class="engine-name">[(${engine.name})] [(${engine.version})] Build [(${#numbers.formatInteger(engine.versionBuild, 4)})]</p>
+<!--                        @*<p class="engine-fullname" th:text="${engine.fullName} + ' Version ' + ${engine.version} + ' Build ' + ${#numbers.formatInteger(engine.versionBuild, 4)}">Czompi Software product written in Spring Boot Version 0.0 Build 0000</p>*@-->
+                        <p class="version-id">[(${engine.build})]</p>
+                        <p class="build-date">[(${engine.compileTime})]</p>
+                    </div>
+                </div>
+                <div class="license">
+                    <div class="container">
+                        <p xmlns:cc="http://creativecommons.org/ns#" >This work is licensed under <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-ND 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nd.svg?ref=chooser-v1"></a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <div class="container">
+                    Copyright &copy; <i class="cc cc-cc"></i> @DateTime.Now.Year <a href="@Globals.Config.CopyrightUrl">@Globals.Config.CopyrightHolder</a>. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+</th:block>
+
+<th:block th:fragment="scriptBaseFragment">
+    <script th:src="${site.cdnUrl} + 'js/cwctma@v4.2.0/app.min.js'"></script>
+    <script th:src="${site.cdnUrl} + 'js/bootstrap@v5.1.2/bootstrap.bundle.min.js'"></script>
+    <script th:src="${site.cdnUrl} + 'js/prism@v1.29.0/prism.min.js'" data-manual></script>
+</th:block>
+
+</body>
+</html>

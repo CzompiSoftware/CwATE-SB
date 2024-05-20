@@ -1,0 +1,62 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version "3.3.0-SNAPSHOT"
+	id 'io.spring.dependency-management' version "1.1.4"
+}
+
+group = "hu.czsoft"
+version = "${project.application_version}"
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url 'https://maven.ecc.no/releases/' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	developmentOnly 'org.springframework.boot:spring-boot-docker'
+
+	implementation "com.google.guava:guava:${project.guava_version}"
+	implementation "org.apache.logging.log4j:log4j-core:${project.log4j_version}"
+	implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${project.jackson_version}"
+	implementation "com.github.zafarkhaja:java-semver:${project.semver_version}"
+
+
+	implementation "org.commonmark:commonmark:${project.commonmark_version}"
+	implementation "org.commonmark:commonmark-ext-gfm-tables:${project.commonmark_version}"
+	implementation "org.commonmark:commonmark-ext-gfm-strikethrough:${project.commonmark_version}"
+	implementation "org.commonmark:commonmark-ext-heading-anchor:${project.commonmark_version}"
+	implementation "org.commonmark:commonmark-ext-image-attributes:${project.commonmark_version}"
+	implementation "org.commonmark:commonmark-ext-task-list-items:${project.commonmark_version}"
+
+	//implementation "party.iroiro.luajava:lua54:${project.luajava_version}"
+	//runtimeOnly "party.iroiro.luajava:lua54-platform:${project.luajava_version}:natives-desktop"
+
+	implementation "no.ecc.rembulan:rembulan-stdlib:${project.rembulan_version}"
+	implementation "no.ecc.rembulan:rembulan-runtime:${project.rembulan_version}"
+	implementation "no.ecc.rembulan:rembulan-compiler:${project.rembulan_version}"
+
+	implementation "commons-io:commons-io:${project.commons_io_version}"
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
