@@ -22,7 +22,7 @@ import java.util.List;
 public class TemplatingEngineApplication {
 
 	public static final List<Metadata> PAGE_LIST = new ArrayList<>();
-	public static final String WORKING_DIRECTORY = "data/";
+	public static final String WORKING_DIRECTORY = "../data/";
 	public static SiteConfig SITE_CONFIG;
 	public static Engine ENGINE;
 	public static Site SITE;
@@ -34,7 +34,6 @@ public class TemplatingEngineApplication {
 		XML_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		XML_MAPPER.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 		XML_MAPPER.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-		XML_MAPPER.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 		XML_MAPPER.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 		SITE_CONFIG = SiteConfig.getInstance();
 		List<String> styles = new ArrayList<>();
@@ -51,7 +50,7 @@ public class TemplatingEngineApplication {
 			}
 			else
 			{
-				styles.add(CdnAPI.renderUrl("css/" + style.getName() + "@v" + style.getVersion() + "/" + MoreObjects.firstNonNull(style.getFileName(), "master.css")));
+				styles.add(CdnAPI.renderUrl("css/%s@v%s/%s".formatted(style.getName(), style.getVersion(), MoreObjects.firstNonNull(style.getFileName(), "master.css"))));
 			}
 		}
 		PAGE_LIST.clear();

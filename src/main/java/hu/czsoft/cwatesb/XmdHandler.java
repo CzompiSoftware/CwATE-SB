@@ -1,12 +1,14 @@
 package hu.czsoft.cwatesb;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.reflect.ClassPath;
 import hu.czsoft.cwatesb.model.Metadata;
 import hu.czsoft.cwatesb.model.Page;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.commonmark.ext.czsoft.xmd.XmdParser;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -37,18 +39,22 @@ public class XmdHandler {
         }
         var fullPath = Path.of(fullFilePath);
         String rawContent;
-        try {
-            rawContent = Files.readString(fullPath, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            if (!Files.exists(fullPath)) {
-                try {
-                    rawContent = Files.readString(Paths.get(this.getClass().getResource("static/404.xmd").toURI()), StandardCharsets.UTF_8);
-                } catch (IOException | URISyntaxException ex) {
-                    throw new RuntimeException(ex);
-                }
+
+        if (!Files.exists(fullPath)) {
+            try {
+                var resource = new ClassPathResource("static/404.xmd", this.getClass().getClassLoader());
+                rawContent = resource.getContentAsString(StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-            throw new RuntimeException(e);
+        } else {
+            try {
+                rawContent = Files.readString(fullPath, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+
 
         Metadata metadata = parseMetadata(rawContent);
 

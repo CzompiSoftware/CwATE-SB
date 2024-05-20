@@ -1,0 +1,21 @@
+services:
+  node:
+    image: ${DOCKER_REGISTRY-}cwate-sb
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    expose:
+      - "80"
+    environment:
+      - ENVIRONMENT=production
+      - CONNECTION_STRING=
+    volumes:
+      - ./run/data/:/data
+    restart: unless-stopped
+  proxy:
+    image: cr.czompicloud.hu/czsoft/reverse-proxy:latest
+    depends_on:
+      - node
+    ports:
+      - "5000:4000"
+    restart: unless-stopped

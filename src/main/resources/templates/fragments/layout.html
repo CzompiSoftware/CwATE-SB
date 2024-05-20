@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link th:each="theme : ${site.styles}" rel="stylesheet" th:href="${theme}"/>
+        <th:block th:each="theme : ${site.styles}">
+            <link rel="stylesheet" th:href="${theme}"/>
+        </th:block>
 
         <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/fluent-icons@v1.0.0/all.css'">
         <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.css'">
@@ -25,15 +27,20 @@
         <title th:unless="${page.metadata.title} == null">[(${page.metadata.title})] - [(${site.Name})]</title>
     </th:block>
 
-    <th:block th:fragment="metadataFragment">
+    <th:block th:fragment="primaryMetadataFragment">
         <!-- #region Primary metadata -->
-        <meta name="title" th:content="${page.metadata.title}">
-        <meta name="description" th:content="${page.metadata.description}">
-        <meta name="theme-color" th:content="${site.themeColor}">
         <meta name="generator" th:content="${engine.fullName}" content="CzSoft web application" />
         <meta name="application-name" th:content="${engine.name} + ' v' + ${engine.version}" content="A CzSoft product."/>
         <meta name="author" th:content="${page.metadata.author}" content="Czompi Software" />
         <!-- #endregion -->
+    </th:block>
+
+    <th:block th:fragment="metadataFragment">
+        <th:block th:insert="~{fragments/layout.html::primaryMetadataFragment}"/>
+        <meta name="title" th:content="${page.metadata.title}">
+        <meta name="description" th:content="${page.metadata.description}">
+        <meta name="theme-color" th:content="${site.themeColor}">
+
         <!-- #region Open Graph metadata -->
         <meta property="og:type" content="website">
         <meta property="og:url" th:content="${page.url}">
@@ -118,7 +125,7 @@
             </div>
             <div class="copyright">
                 <div class="container">
-                    Copyright &copy; <i class="cc cc-cc"></i> @DateTime.Now.Year <a href="@Globals.Config.CopyrightUrl">@Globals.Config.CopyrightHolder</a>. All rights reserved.
+                    Copyright &copy; <i class="cc cc-cc"></i> [(${#dates.format(#dates.createNow(), 'yyyy')})] <a th:href="" href="https://czsoft.hu/">Czompi Software</a>. All rights reserved.
                 </div>
             </div>
         </div>

@@ -1,23 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:insert="~{fragments/layout.html::headBaseFragment}"/>
     <title th:text="${'Error occurred - ' + site.name}"></title>
-
-    <link th:each="theme : ${site.styles}" rel="stylesheet" th:href="${theme}">
-
-    <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/fluent-icons@v1.0.0/all.css'">
-    <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.css'">
-    <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.light.css'" media="(prefers-color-scheme: light)">
-    <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.dark.css'" media="(prefers-color-scheme: dark)">
-
-    <!-- #region Primary metadata -->
-    <meta name="generator" th:content="${engine.fullName}" />
-    <meta name="application-name" th:content="${engine.name} + ' v' + ${engine.version}" />
-    <meta name="author" content="Czompi Software" />
-    <!-- #endregion -->
+    <th:block th:insert="~{fragments/layout.html::primaryMetadataFragment}"/>
 </head>
 
 <!--
@@ -31,53 +17,51 @@
       instead, just to show it can be done.
  -->
 <body>
-    <h1 th:text="${engine.name}">A CzSoft product</h1>
+    <div class="container w-100">
 
-    <!--  As we are using Thymeleaf, you might consider using
-          ${#httpServletRequest.requestURL}. But that returns the path
-          to this error page.  Hence we explicitly add the url to the
-          Model in some of the example code. -->
-    <p th:if="${url}">
-        <b>Page:</b> <span th:text="${url}">/</span>
-    </p>
+        <h1 th:text="${engine.name}">A CzSoft product</h1>
 
-    <p th:if="${timestamp}" id='created'>
-        <b>Occurred:</b> <span th:text="${timestamp}">0000.00.00T00:00</span>
-    </p>
+        <p th:if="${url}">
+            <b>Page:</b> <span th:text="${url}">/</span>
+        </p>
 
-    <p th:if="${status}">
-        <b>Response Status:</b> <span th:text="${status}">000</span> <span
-            th:if="${exceptionType}" th:text="'('+${exceptionType}+')'">error ...</span>
-    </p>
+        <p th:if="${timestamp}" id='created'>
+            <b>Occurred:</b> <span th:text="${timestamp}">0000.00.00T00:00</span>
+        </p>
 
-    <!--/* ${ex} is set by ourSimpleMappingExceptionResolver,
-           ${exception} or ${message} are set internally by Spring Boot. */-->
-    <div th:if="${ex} or ${exception} or (${message} and ${message.length() != 0})">
-        <b>Cause:</b> <span th:if="${ex}" th:text="${ex}">exception ...</span>
-        <span th:if="${exception}" th:text="${exception}">exception ...</span>
-        <span th:if="${message} and ${message.length() != 0}"
-              th:text="${message}">message ...</span>
-        <blockquote>
-            <i>Note: You would never generate a page that displays a Java
-                exception to an end-user in a real application</i>
-        </blockquote>
+        <p th:if="${status}">
+            <b>Response Status:</b> <span th:text="${status}">000</span> <span
+                th:if="${exceptionType}" th:text="'('+${exceptionType}+')'">error ...</span>
+        </p>
+
+        <!--/* ${ex} is set by ourSimpleMappingExceptionResolver,
+               ${exception} or ${message} are set internally by Spring Boot. */-->
+        <div th:if="${ex} or ${exception} or (${message} and ${message.length() != 0})">
+            <b>Cause:</b> <span th:if="${ex}" th:text="${ex}">exception ...</span>
+            <span th:if="${exception}" th:text="${exception}">exception ...</span>
+            <span th:if="${message} and ${message.length() != 0}"
+                  th:text="${message}">message ...</span>
+            <blockquote>
+                <i>Note: You would never generate a page that displays a Java
+                    exception to an end-user in a real application</i>
+            </blockquote>
+        </div>
+
+        <p th:unless="${ex} or ${exception} or (${message} and ${message.length() != 0})">
+            Cause unknown (no exception details available)</p>
+
+        <p class="filler"></p>  <!--  force space before details -->
+
+        <hr/>
+
+        <!-- Additional explanation - you would not normally have this in your error page. -->
+        <p class="alert alert-warning">
+            You are seeing this error page due to Spring Boot (which returns a
+            view called "error" in response to uncaught exceptions. Since we are
+            using Thymeleaf this corresponds to the template
+            <code class="bg-none">error.html</code>
+            )
+        </p>
     </div>
-
-    <p th:unless="${ex} or ${exception} or (${message} and ${message.length() != 0})">
-        Cause unknown (no exception details available)</p>
-
-    <p class="filler"></p>  <!--  force space before details -->
-
-    <hr/>
-
-    <!-- Additional explanation - you would not normally have this in your error page. -->
-    <p class="alert alert-warning">
-        You are seeing this error page due to Spring Boot (which returns a
-        view called "error" in response to uncaught exceptions. Since we are
-        using Thymeleaf this corresponds to the template
-        <code class="bg-none">error.html</code>
-        )
-    </p>
-
 </body>
 </html>
