@@ -7,11 +7,11 @@ import lombok.ToString;
 @ToString
 public class Page {
 
-    private Metadata metadata;
+    private final Metadata metadata;
 
-    private String url;
+    private final String url;
 
-    private String content;
+    private final String content;
 
     public Page(Metadata metadata, String content, String url) {
         this.metadata = metadata;

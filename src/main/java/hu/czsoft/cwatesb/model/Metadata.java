@@ -84,9 +84,8 @@ public class Metadata {
     }
 
     public static Metadata parse(Metadata data, int length){
-        Metadata newData = data;
-        newData.length = length;
-        return newData;
+        data.length = length;
+        return data;
     }
 }
 

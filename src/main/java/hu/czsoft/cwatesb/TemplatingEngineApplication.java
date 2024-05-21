@@ -23,6 +23,8 @@ public class TemplatingEngineApplication {
 
 	public static final List<Metadata> PAGE_LIST = new ArrayList<>();
 	public static final String WORKING_DIRECTORY = "../data/";
+	public static final String CONTENT_DIRECTORY = WORKING_DIRECTORY + "content/";
+	public static final String CONTENT_LANG_DIRECTORY = WORKING_DIRECTORY + "content-{0}/";
 	public static SiteConfig SITE_CONFIG;
 	public static Engine ENGINE;
 	public static Site SITE;

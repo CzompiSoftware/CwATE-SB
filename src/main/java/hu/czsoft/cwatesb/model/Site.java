@@ -52,7 +52,7 @@ public class Site {
 
     public void setBaseUrlFromRequest(HttpServletRequest request) {
         String baseUrl = request.getRequestURL().toString();
-        this.baseUrl = baseUrl.replace(request.getRequestURI().toString(), "");
+        this.baseUrl = baseUrl.replace(request.getRequestURI(), "");
 
     }
 }

@@ -32,6 +32,19 @@ public class XmdController {
         var filePath = httpServletRequest.getServletPath();
         return processPath(httpServletRequest,filePath, model);
     }
+
+    @GetMapping("/**.xmdl")
+    public String handleXmdl(HttpServletRequest httpServletRequest, Model model) {
+        var filePath = httpServletRequest.getServletPath();
+        return processPath(httpServletRequest,filePath, model);
+    }
+
+    @GetMapping("/**.html")
+    public String handleHtml(HttpServletRequest httpServletRequest, Model model) {
+        var filePath = httpServletRequest.getServletPath();
+        return processPath(httpServletRequest, "%s.xmd".formatted(filePath.substring(0, filePath.length() - ".html".length())), model);
+    }
+
     @GetMapping(value = "/favicon.ico", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] handleFavicon(HttpServletRequest request) throws IOException {
         if (TemplatingEngineApplication.SITE.getBaseUrl() == null) {

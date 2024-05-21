@@ -25,7 +25,7 @@ public class XmdErrorController implements ErrorController {
         Object exception = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         Object exceptionType = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION_TYPE);
         Object servletName = request.getAttribute(RequestDispatcher.ERROR_SERVLET_NAME);
-        _logger.debug(TemplatingEngineApplication.SITE);
+        //_logger.debug(TemplatingEngineApplication.SITE);
 
         model.addAttribute("engine", TemplatingEngineApplication.ENGINE);
         model.addAttribute("site", TemplatingEngineApplication.SITE);
@@ -35,7 +35,7 @@ public class XmdErrorController implements ErrorController {
         model.addAttribute("message", message);
         model.addAttribute("servletName", servletName);
         model.addAttribute("url", requestUri);
-        _logger.debug(model.asMap().toString());
+        //_logger.debug(model.asMap().toString());
         return "error";
     }
 }

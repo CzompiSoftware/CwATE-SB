@@ -26,16 +26,16 @@ public class XmdHandler {
     private static final Logger _logger = LogManager.getLogger(XmdHandler.class);
     @Getter
     private static final XmdHandler instance = new XmdHandler();
-    private XmdParser xmdParser = new XmdParser();
+    private final XmdParser xmdParser = new XmdParser();
 
     public Page renderFile(String filePath, String baseUrl) {
         if (filePath.startsWith("/")) filePath = filePath.substring(1);
         if (filePath.isEmpty()) filePath = "index.xmdl";
-        if(filePath.endsWith(".html")) filePath = filePath.substring(0, filePath.length() - ".html".length()) + ".xmdl";
-        var fullFilePath = (TemplatingEngineApplication.WORKING_DIRECTORY + filePath);
+        if (filePath.endsWith(".html")) filePath = filePath.substring(0, filePath.length() - ".html".length()) + ".xmdl";
+        var fullFilePath = (TemplatingEngineApplication.CONTENT_DIRECTORY + filePath);
 
         if (!Files.exists(Path.of(fullFilePath))) {
-            fullFilePath = fullFilePath.substring(0, fullFilePath.length()-1);
+            fullFilePath = fullFilePath.substring(0, fullFilePath.length() - 1); //.xmdl -> .xmd
         }
         var fullPath = Path.of(fullFilePath);
         String rawContent;
@@ -87,7 +87,7 @@ public class XmdHandler {
         var files = enumeratePageName();
 
         for (var file : files) {
-            file = TemplatingEngineApplication.WORKING_DIRECTORY + file;
+            file = TemplatingEngineApplication.CONTENT_DIRECTORY + file;
             try {
                 var data = Files.readString(Path.of(file), StandardCharsets.UTF_8);
                 pages.add(XmdHandler.getInstance().parseMetadata(data));
@@ -99,8 +99,8 @@ public class XmdHandler {
         return pages;
     }
     public List<String> enumeratePageName() {
-        var folder = new File(TemplatingEngineApplication.WORKING_DIRECTORY);
-        FilenameFilter folderFilter = (dir, name) -> name.toLowerCase().endsWith(".xmd");
+        var folder = new File(TemplatingEngineApplication.CONTENT_DIRECTORY);
+        FilenameFilter folderFilter = (dir, name) -> name.toLowerCase().endsWith(".xmd") || name.toLowerCase().endsWith(".xmdl");
         var files = folder.list(folderFilter);
 
         return Arrays.stream(files != null ? files : new String[0]).toList();
