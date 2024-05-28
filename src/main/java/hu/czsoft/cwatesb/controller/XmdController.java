@@ -72,10 +72,17 @@ public class XmdController {
         Path path = Path.of(fullPath);
         FileSystemResource resource = new FileSystemResource(path);
         try {
+            MediaType contentType;
+            try {
+                contentType = MediaType.parseMediaType(Files.probeContentType(path));
+            } catch (Exception ex) {
+                logger.warn(ex);
+                contentType = MediaType.parseMediaType("image/x-icon");
+            }
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(Files.probeContentType(path)))
+                    .contentType(contentType)
                     .body(resource);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e);
             return ResponseEntity.notFound().build();
         }

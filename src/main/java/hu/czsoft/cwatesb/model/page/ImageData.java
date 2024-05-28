@@ -18,7 +18,8 @@ public class ImageData
      * Image description
      */
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty(isAttribute = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
     private String alt;
 
     /**

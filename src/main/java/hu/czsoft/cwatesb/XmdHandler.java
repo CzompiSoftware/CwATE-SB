@@ -16,12 +16,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import static java.util.Arrays.*;
 
 public class XmdHandler {
     private static final Logger _logger = LogManager.getLogger(XmdHandler.class);
@@ -40,18 +38,20 @@ public class XmdHandler {
 
         var fullFilePath = (TemplatingEngineApplication.CONTENT_DIRECTORY + filePath);
 
-        if (fullFilePath.toLowerCase().endsWith("/") || !(fullFilePath.toLowerCase().endsWith(".xmd") || fullFilePath.toLowerCase().endsWith(".xmdl") || fullFilePath.toLowerCase().endsWith(".html"))) {
+        boolean isValidFile = fullFilePath.toLowerCase().endsWith(".xmd") || fullFilePath.toLowerCase().endsWith(".xmdl") || fullFilePath.toLowerCase().endsWith(".html");
+
+        if (fullFilePath.toLowerCase().endsWith("/") || !isValidFile) {
             if (Files.isDirectory(Path.of(fullFilePath))) {
                 if(!fullFilePath.endsWith("/")) fullFilePath += "/";
                 fullFilePath += "index.xmdl";
             }
         }
-        _logger.info(fullFilePath);
-//        if (!Files.exists(Path.of(fullFilePath))) {
-//            fullFilePath = fullFilePath.substring(0, fullFilePath.length() - 1); //.xmdl -> .xmd
-//        }
+//        _logger.debug(fullFilePath);
+        if (fullFilePath.toLowerCase().endsWith(".xmdl") && !Files.exists(Path.of(fullFilePath))) {
+            fullFilePath = fullFilePath.substring(0, fullFilePath.length() - 1); //.xmdl -> .xmd
+        }
 
-        _logger.info(fullFilePath);
+        _logger.debug(fullFilePath);
         var fullPath = Path.of(fullFilePath);
         String rawContent = "";
 
@@ -83,67 +83,60 @@ public class XmdHandler {
 
         rawContent = rawContent.strip();
 
-        if(!rawContent.toLowerCase().startsWith("<!doctype cwctma-docs>") && !rawContent.toLowerCase().startsWith("<!doctype cwate>")) return null;
+        if(!rawContent.toLowerCase().startsWith("<!doctype cwctma-docs>") && !rawContent.toLowerCase().startsWith("<!doctype cwate>")) {
+            return null;
+        }
 
 
         Metadata metadata = parseMetadata(rawContent);
 
         rawContent = rawContent.substring(metadata.getLength());
-        while (rawContent.startsWith("\n")) {
-            rawContent = rawContent.substring(1);
-        }
-        while (rawContent.startsWith("\r\n")) {
-            rawContent = rawContent.substring(2);
-        }
+        rawContent = clearText(rawContent);
         var sha256 = DigestUtils.sha256Hex(rawContent);
         var content = xmdParser.render(rawContent);
         return new Page(metadata, content, sha256);
     }
+
+    private String clearText(String rawContent) {
+        if (rawContent.startsWith("\n")) {
+            return clearText(rawContent.substring(1).strip());
+        }
+        if (rawContent.startsWith("\r\n")) {
+            return clearText(rawContent.substring(2).strip());
+        }
+        return rawContent.strip();
+    }
+
     private Metadata parseMetadata(String content) {
         String rawMetadata = content.substring(0, content.toLowerCase().indexOf("</metadata>") + "</metadata>".length());
         Metadata metadata = new Metadata();
         try {
             metadata = Metadata.parse(TemplatingEngineApplication.XML_MAPPER.readValue(rawMetadata, Metadata.class), rawMetadata.length());
-            _logger.info(rawMetadata.replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t"));
-            _logger.info(metadata);
+//            _logger.debug(rawMetadata.replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t"));
+            _logger.debug(metadata);
         } catch (JsonProcessingException e) {
             _logger.error(e);
         }
         return metadata;
     }
 
-//    public List<Metadata> enumeratePageMetadata() {
-//        List<Metadata> pages = new ArrayList<>();
-//        var files = enumeratePageName();
-//
-//        for (var file : files) {
-//            file = TemplatingEngineApplication.CONTENT_DIRECTORY + file;
-//            _logger.info(file);
-//            try {
-//                var data = Files.readString(Path.of(file), StandardCharsets.UTF_8);
-//                //_logger.info(data);
-//                pages.add(XmdHandler.getInstance().parseMetadata(data));
-//            } catch (IOException e) {
-//                _logger.error(e);
-//            }
-//        }
-//
-//        return pages;
-//    }
-
     public List<Page> enumeratePages() {
         List<Page> pages = new ArrayList<>();
-        var files = enumeratePageName();
+        var files = enumeratePagePaths();
+        _logger.debug("Enumerating pages in folder {}:", TemplatingEngineApplication.CONTENT_DIRECTORY);
 
         for (var file : files) {
-            file = TemplatingEngineApplication.CONTENT_DIRECTORY + file;
-            _logger.trace(file);
+            var fileName = TemplatingEngineApplication.CONTENT_DIRECTORY + file.toString();
+            _logger.debug(fileName);
             try {
-                var data = Files.readString(Path.of(file), StandardCharsets.UTF_8);
-                //_logger.info(data);
+                var data = Files.readString(Path.of(fileName), StandardCharsets.UTF_8);
+                //_logger.debug(data);
                 var page = XmdHandler.getInstance().parsePage(data);
 
-                if(page == null) continue;
+                if (page == null) {
+                    _logger.warn("Failed to parse '{}' page's content.", file);
+                    continue;
+                }
 
                 pages.add(page);
             } catch (IOException e) {
@@ -161,12 +154,20 @@ public class XmdHandler {
         return pages;
     }
 
-    public List<String> enumeratePageName() {
-        var folder = new File(TemplatingEngineApplication.CONTENT_DIRECTORY);
-        FilenameFilter folderFilter = (dir, name) -> name.toLowerCase().endsWith(".xmd") || name.toLowerCase().endsWith(".xmdl");
-        var files = folder.list(folderFilter);
+    public List<Path> enumeratePagePaths() {
+        List<Path> files = new ArrayList<>();
 
-        return stream(files != null ? files : new String[0]).toList();
+        try {
+            files = Files.find(Paths.get(TemplatingEngineApplication.CONTENT_DIRECTORY),
+                            Integer.MAX_VALUE,
+                            (filePath, fileAttr) ->
+                                    fileAttr.isRegularFile() && (filePath.getFileName().endsWith(".md") || filePath.getFileName().endsWith(".xmd") || filePath.getFileName().endsWith(".xmdl")))
+                    .toList();
+        } catch (IOException e) {
+            _logger.error(e);
+        }
+
+        return files;
     }
 
 }
