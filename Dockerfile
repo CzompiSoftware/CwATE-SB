@@ -10,10 +10,8 @@ FROM eclipse-temurin:21-jre-alpine
 VOLUME [ "/data" ]
 EXPOSE 80
 ENV \
-    # Connection string
-    CONNECTION_STRING="" \
     # CwATE-SB version
-    CWATE_VERSION=1.0.0+build.1
+    CWATE_VERSION=1.0.0+build.2
 
 
 WORKDIR /app

@@ -5,9 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <th:block th:each="theme : ${site.styles}">
-            <link rel="stylesheet" th:href="${theme}"/>
+        <link rel="stylesheet" th:href="${theme}"/>
         </th:block>
-
         <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/fluent-icons@v1.0.0/all.css'">
         <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.css'">
         <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.light.css'" media="(prefers-color-scheme: light)">
@@ -31,7 +30,7 @@
         <!-- #region Primary metadata -->
         <meta name="generator" th:content="${engine.fullName}" content="CzSoft web application" />
         <meta name="application-name" th:content="${engine.name} + ' v' + ${engine.version}" content="A CzSoft product."/>
-        <meta name="author" th:content="${page.metadata.author}" content="Czompi Software" />
+        <meta name="author" th:if="${page} != null" th:content="${page.metadata.author}" content="Czompi Software" />
         <!-- #endregion -->
     </th:block>
 
@@ -43,14 +42,14 @@
 
         <!-- #region Open Graph metadata -->
         <meta property="og:type" content="website">
-        <meta property="og:url" th:content="${page.url}">
+        <meta property="og:url" th:content="${page.metadata.url}">
         <meta property="og:title" th:if="${page.metadata.title}" th:content="${page.metadata.title}">
         <meta property="og:description" th:if="${page.metadata.description}" th:content="${page.metadata.description}">
         <meta property="og:image" th:if="${page.metadata.previewImage.value}" th:content="${page.metadata.previewImage.value}">
         <!-- #endregion -->
         <!-- #region Twitter metadata -->
         <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" th:content="${page.url}">
+        <meta property="twitter:url" th:content="${page.metadata.url}">
         <meta property="twitter:title" th:if="${page.metadata.title}" th:content="${page.metadata.title}">
         <meta property="twitter:description" th:if="${page.metadata.description}" th:content="${page.metadata.description}">
         <meta th:if="${page.metadata.previewImage.value}" property="twitter:image" th:content="${page.metadata.previewImage.value}">
@@ -68,13 +67,15 @@
 <th:block th:fragment="navbarFragment">
     <!-- #region Czompi Group products -->
     <nav class="nav nav-sticky group" aria-label="Czompi Group">
-        <div class="container w-100" th:each="group: ${site.products}">
-            <div th:if="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
-                <span class="active" th:text="${group.name}"/>
-            </div>
-            <div th:unless="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
-                <a th:href="${group.url}" th:text="${group.name}"/>
-            </div>
+        <div class="container w-100">
+            <th:block th:each="group: ${site.products}">
+                <div th:if="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
+                    <span class="active" th:text="${group.name}"/>
+                </div>
+                <div th:unless="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
+                    <a th:href="${group.url}" th:text="${group.name}"/>
+                </div>
+            </th:block>
         </div>
     </nav>
     <!-- #endregion -->
@@ -85,19 +86,22 @@
                 <img th:src="${site.cdnUrl} + 'img/' + ${site.id} + '@v1.0/' + ${site.id} + '-logo.svg'">
             </a>
             <a class="nav-mobile" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation"></a>
-            <div class="nav-items dropdown-menu navbar-collapse collapse" aria-labelledby="navbar-main" id="navbar-main" th:each="p : ${site.pages}">
-
-                <!--                    @foreach (Metadata page in Globals.Pages.Select(itm =>-->
-                <!--                    {-->
-                <!--                    if (itm.NavMenuId == -1) itm.NavMenuId = short.Parse($"{Math.Min(Globals.Pages.Max(x => x.NavMenuId) + Globals.Pages.Count, (int)short.MaxValue)}");-->
-                <!--                    return itm;-->
-                <!--                    }).Where(x => x.IsNavMenuItem == true).OrderBy(x => x.NavMenuId).ThenBy(y => y.Id))-->
-                <!--                    {-->
-                <div th:if="${true}" class="nav-item">
-                    <a th:href="${site.baseUrl} + '/' + ${p.id}" th:class="${#strings.equalsIgnoreCase(page.metadata.id, p.id)} ? 'active': ''">
-                        [(${p.title})]
-                    </a>
-                </div>
+            <div class="nav-items dropdown-menu navbar-collapse collapse" aria-labelledby="navbar-main" id="navbar-main">
+                <th:block th:each="p : ${pageList}">
+                    <th:block th:if="${p.metadata.isNavMenuItem}">
+                        <!--                    @foreach (Metadata page in Globals.Pages.Select(itm =>-->
+                        <!--                    {-->
+                        <!--                    if (itm.NavMenuId == -1) itm.NavMenuId = short.Parse($"{Math.Min(Globals.Pages.Max(x => x.NavMenuId) + Globals.Pages.Count, (int)short.MaxValue)}");-->
+                        <!--                    return itm;-->
+                        <!--                    }).Where(x => x.IsNavMenuItem == true).OrderBy(x => x.NavMenuId).ThenBy(y => y.Id))-->
+                        <!--                    {-->
+                        <div class="nav-item">
+                            <a th:href="${site.baseUrl} + '/' + ${p.metadata.id}" th:class="${#strings.equalsIgnoreCase(page.metadata.id, p.metadata.id)} ? 'active': ''">
+                                [(${p.metadata.title})]
+                            </a>
+                        </div>
+                    </th:block>
+                </th:block>
             </div>
         </nav>
     </div>
@@ -119,13 +123,13 @@
                 </div>
                 <div class="license">
                     <div class="container">
-                        <p xmlns:cc="http://creativecommons.org/ns#" >This work is licensed under <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-ND 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nd.svg?ref=chooser-v1"></a></p>
+                        <p xmlns:cc="http://creativecommons.org/ns#" >This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-ND 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nd.svg?ref=chooser-v1"></a></p>
                     </div>
                 </div>
             </div>
             <div class="copyright">
                 <div class="container">
-                    Copyright &copy; <i class="cc cc-cc"></i> [(${#dates.format(#dates.createNow(), 'yyyy')})] <a th:href="" href="https://czsoft.hu/">Czompi Software</a>. All rights reserved.
+                    Copyright &copy; <i class="cc cc-cc"></i> [(${#dates.format(#dates.createNow(), 'yyyy')})] <a th:href="${site.copyrightHolder.url}" href="https://czsoft.hu/" th:value="${site.copyrightHolder.name}">Czompi Software</a>. All rights reserved.
                 </div>
             </div>
         </div>

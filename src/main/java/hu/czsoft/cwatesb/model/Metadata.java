@@ -15,66 +15,83 @@ import java.util.Date;
 @Setter
 @Getter
 @JacksonXmlRootElement
+@JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
 @ToString
 public class Metadata {
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty(isAttribute = true)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
     private String type;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty(isAttribute = true)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
     private String lang;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty(isAttribute = true)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
     private boolean isNavMenuItem;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty(isAttribute = true)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
     private short navMenuId;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty(isAttribute = true)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
     private boolean showModifiedAt;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
     @JacksonXmlProperty
     private String id;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
     @JacksonXmlProperty
     private String title;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
     private String keywords;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
     private String description;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
     private String search;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
     private String author = "";
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty@JsonProperty("image")
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
+    @JsonProperty("image")
     private ImageData previewImage = new ImageData();
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES}, shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
     private Date releasedAt;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @JsonInclude(JsonInclude.Include.NON_NULL)@JacksonXmlProperty
+    @JsonFormat(with = {JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES}, shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty
     private Date modifiedAt;
 
     @JsonIgnore@Getter
     private int length;
+
+    @JsonIgnore@Getter@Setter
+    private String url;
 
     public Metadata() {
         this(-1);

@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TemplatingEngineApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+    <module name="hu.czsoft.CwATE-SB.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="hu.czsoft.cwatesb.TemplatingEngineApplication" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/run/data/" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

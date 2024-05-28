@@ -1,3 +1,6 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version "3.3.0-SNAPSHOT"
@@ -6,6 +9,15 @@ plugins {
 
 group = "hu.czsoft"
 version = "${project.application_version}"
+
+bootJar {
+	manifest {
+		attributes 'Implementation-Title': "CwATE/SB"
+		attributes 'Implementation-Version': "${project.application_version}"
+		attributes 'Implementation-Build': UUID.randomUUID()
+		attributes 'Implementation-Timestamp': LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+	}
+}
 
 java {
 	sourceCompatibility = '17'
@@ -36,6 +48,11 @@ dependencies {
 	implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${project.jackson_version}"
 	implementation "com.github.zafarkhaja:java-semver:${project.semver_version}"
 
+	// Telemetry
+	implementation(platform("io.opentelemetry:opentelemetry-bom:1.38.0"))
+	implementation("io.opentelemetry:opentelemetry-api")
+	implementation("io.opentelemetry:opentelemetry-sdk")
+	implementation("io.opentelemetry:opentelemetry-exporter-logging")
 
 	implementation "org.commonmark:commonmark:${project.commonmark_version}"
 	implementation "org.commonmark:commonmark-ext-gfm-tables:${project.commonmark_version}"
@@ -52,6 +69,7 @@ dependencies {
 	implementation "no.ecc.rembulan:rembulan-compiler:${project.rembulan_version}"
 
 	implementation "commons-io:commons-io:${project.commons_io_version}"
+	implementation "commons-codec:commons-codec:${project.commons_codec_version}"
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

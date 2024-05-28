@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Controller
 public class XmdErrorController implements ErrorController {
     Logger _logger = LogManager.getLogger(this);
@@ -19,13 +22,13 @@ public class XmdErrorController implements ErrorController {
         if (TemplatingEngineApplication.SITE.getBaseUrl() == null) {
             TemplatingEngineApplication.SITE.setBaseUrlFromRequest(request);
         }
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        Object message = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
-        Object requestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
-        Object exception = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-        Object exceptionType = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION_TYPE);
-        Object servletName = request.getAttribute(RequestDispatcher.ERROR_SERVLET_NAME);
-        //_logger.debug(TemplatingEngineApplication.SITE);
+        var status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        var message = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+        var requestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
+        var exception = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+        var exceptionType = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION_TYPE);
+        var servletName = request.getAttribute(RequestDispatcher.ERROR_SERVLET_NAME);
+        var timestamp = LocalDateTime.now();
 
         model.addAttribute("engine", TemplatingEngineApplication.ENGINE);
         model.addAttribute("site", TemplatingEngineApplication.SITE);
@@ -34,8 +37,8 @@ public class XmdErrorController implements ErrorController {
         model.addAttribute("exceptionType", exceptionType);
         model.addAttribute("message", message);
         model.addAttribute("servletName", servletName);
+        model.addAttribute("timestamp", timestamp);
         model.addAttribute("url", requestUri);
-        //_logger.debug(model.asMap().toString());
         return "error";
     }
 }

@@ -6,27 +6,21 @@ import lombok.ToString;
 
 import java.util.UUID;
 
+@Getter
 @ToString
 public class Engine {
-    @Getter
     private final String nodeId;
 
-    @Getter
     private final String name;
 
-    @Getter
     private final String fullName;
 
-    @Getter
     private final Version version;
 
-    @Getter
     private final int versionBuild;
 
-    @Getter
     private final UUID build;
 
-    @Getter
     private final String compileTime;
 
     public Engine(String nodeId, String name, String fullName, Version version, int versionBuild, UUID build, String compileTime) {
