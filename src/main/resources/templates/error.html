@@ -1,5 +1,5 @@
 <!--
-    [(${engine.fullName})] Version [(${engine.version})] Build [(${engine.build})]
+    [(${engine.fullName})] Version [(${engine.version})] Build [(${engine.versionBuild})]
     - Compiled at [(${engine.compileTime})]
     This product licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) license.
 
@@ -9,7 +9,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${site.defaultLang}" lang="hu">
 <head>
     <th:block th:insert="~{fragments/layout.html::headBaseFragment}"/>
-    <title th:text="${'Error occurred - ' + site.name}">Error occurred - CwATE/SB</title>
+    <title th:text="${'Error occurred - ' + site.shortName}">Error occurred - CwATE/SB</title>
     <th:block th:insert="~{fragments/layout.html::primaryMetadataFragment}"/>
 </head>
 

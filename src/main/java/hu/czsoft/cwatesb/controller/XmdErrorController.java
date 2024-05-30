@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Controller
 public class XmdErrorController implements ErrorController {
@@ -19,8 +18,8 @@ public class XmdErrorController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, Model model) {
-        if (TemplatingEngineApplication.SITE.getBaseUrl() == null) {
-            TemplatingEngineApplication.SITE.setBaseUrlFromRequest(request);
+        if (TemplatingEngineApplication.SITE_MANAGER.get().getSiteUrl() == null) {
+            TemplatingEngineApplication.SITE_MANAGER.setBaseUrlFromRequest(request);
         }
         var status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         var message = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
@@ -30,8 +29,8 @@ public class XmdErrorController implements ErrorController {
         var servletName = request.getAttribute(RequestDispatcher.ERROR_SERVLET_NAME);
         var timestamp = LocalDateTime.now();
 
-        model.addAttribute("engine", TemplatingEngineApplication.ENGINE);
-        model.addAttribute("site", TemplatingEngineApplication.SITE);
+        model.addAttribute("engine", TemplatingEngineApplication.ENGINE_MANAGER.get());
+        model.addAttribute("site", TemplatingEngineApplication.SITE_MANAGER.get());
         model.addAttribute("status", status);
         model.addAttribute("exception", exception);
         model.addAttribute("exceptionType", exceptionType);

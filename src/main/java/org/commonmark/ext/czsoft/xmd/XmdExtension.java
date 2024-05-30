@@ -7,9 +7,6 @@ import org.commonmark.ext.czsoft.xmd.lua.block.LuaNodeRenderer;
 import org.commonmark.Extension;
 import org.commonmark.ext.czsoft.xmd.lua.inline.LuaInlineParser;
 import org.commonmark.ext.czsoft.xmd.lua.inline.InlineLuaHtmlNodeRenderer;
-import org.commonmark.internal.inline.InlineContentParser;
-import org.commonmark.parser.InlineParser;
-import org.commonmark.parser.InlineParserFactory;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 

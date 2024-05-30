@@ -1,4 +1,4 @@
-package hu.czsoft.cwatesb.model;
+package hu.czsoft.cwatesb.engine;
 
 import com.github.zafarkhaja.semver.Version;
 import lombok.Getter;
@@ -10,6 +10,8 @@ import java.util.UUID;
 @ToString
 public class Engine {
     private final String nodeId;
+
+    private final String nodeName;
 
     private final String name;
 
@@ -23,8 +25,9 @@ public class Engine {
 
     private final String compileTime;
 
-    public Engine(String nodeId, String name, String fullName, Version version, int versionBuild, UUID build, String compileTime) {
+    public Engine(String nodeId, String nodeName, String name, String fullName, Version version, int versionBuild, UUID build, String compileTime) {
         this.nodeId = nodeId;
+        this.nodeName = nodeName;
         this.name = name;
         this.fullName = fullName;
         this.version = version;

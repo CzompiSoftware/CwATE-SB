@@ -1,13 +1,14 @@
 package org.commonmark.ext.czsoft.xmd.lua.block;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.commonmark.ext.czsoft.xmd.lua.LuaBlock;
 import org.commonmark.ext.czsoft.xmd.lua.LuaType;
 import org.commonmark.node.Block;
 import org.commonmark.parser.block.*;
 
-import java.util.logging.Logger;
-
 public class LuaBlockParser extends AbstractBlockParser {
+    private static Logger LOGGER = LogManager.getLogger(LuaBlockParser.class);
     private final static String BLOCK_START = "@lua{>";
     private final static String BLOCK_END = "<}";
     private final LuaType type;
@@ -71,7 +72,7 @@ public class LuaBlockParser extends AbstractBlockParser {
 
         debugStr += "currentLineStr=\"" +currentLineStr + "\"";
         debugStr += "}";
-        Logger.getLogger("LuaBlockParser").info(debugStr);
+        LOGGER.debug(debugStr);
         return BlockContinue.atColumn(col + indent + matchedIndex);
     }
 

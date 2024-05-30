@@ -1,5 +1,7 @@
 package org.commonmark.ext.czsoft.xmd.alert;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.commonmark.node.Block;
 import org.commonmark.parser.block.*;
 
@@ -7,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AlertBlockParser extends AbstractBlockParser {
+    private static Logger LOGGER = LogManager.getLogger(AlertBlockParser.class);
     private static final Pattern ALERT_LINE = Pattern.compile("\\s*]>([a-zA-Z]*)<\\s(.*)");
     private static final Pattern ALERT_CONTENT_LINE = Pattern.compile("\\s*]\\s(.*)");
     private final AlertType type;
@@ -42,15 +45,15 @@ public class AlertBlockParser extends AbstractBlockParser {
         }
         //Matcher matcher = ALERT_CONTENT_LINE.matcher(currentLine);
         //if (matcher.matches()) {
-            if(currentLineStr.contains("]") && !currentLineStr.contains("]>")) {
-                int col = parserState.getColumn();
-                int indent = parserState.getIndent();
-                int matchedIndex = currentLineStr.indexOf(']') + 1;
+        if(currentLineStr.contains("]") && !currentLineStr.contains("]>")) {
+            int col = parserState.getColumn();
+            int indent = parserState.getIndent();
+            int matchedIndex = currentLineStr.indexOf(']') + 1;
 
-                return BlockContinue.atColumn(col + indent + matchedIndex);
-            }
+            return BlockContinue.atColumn(col + indent + matchedIndex);
+        }
         //}
-
+        LOGGER.debug(currentLine);
         return BlockContinue.none();
     }
 

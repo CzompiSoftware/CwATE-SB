@@ -22,8 +22,8 @@
     </th:block>
 
     <th:block th:fragment="titleFragment">
-        <title th:if="${page.metadata.title} == null">Unnamed - [(${site.name})]</title>
-        <title th:unless="${page.metadata.title} == null">[(${page.metadata.title})] - [(${site.Name})]</title>
+        <title th:if="${page.metadata.title} == null">Unnamed - [(${site.shortName})]</title>
+        <title th:unless="${page.metadata.title} == null">[(${page.metadata.title})] - [(${site.shortName})]</title>
     </th:block>
 
     <th:block th:fragment="primaryMetadataFragment">
@@ -38,7 +38,7 @@
         <th:block th:insert="~{fragments/layout.html::primaryMetadataFragment}"/>
         <meta name="title" th:content="${page.metadata.title}">
         <meta name="description" th:content="${page.metadata.description}">
-        <meta name="theme-color" th:content="${site.themeColor}">
+        <meta name="theme-color" th:content="${site.primaryColor}">
 
         <!-- #region Open Graph metadata -->
         <meta property="og:type" content="website">
@@ -82,7 +82,7 @@
     <!-- #region Navigation menu -->
     <div class="container w-100">
         <nav class="nav menu" aria-label="Main">
-            <a th:href="${site.baseUrl}" class="brand">
+            <a th:href="${site.siteUrl}" class="brand">
                 <img th:src="${site.cdnUrl} + 'img/' + ${site.id} + '@v1.0/' + ${site.id} + '-logo.svg'">
             </a>
             <a class="nav-mobile" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation"></a>
@@ -95,8 +95,9 @@
                         <!--                    return itm;-->
                         <!--                    }).Where(x => x.IsNavMenuItem == true).OrderBy(x => x.NavMenuId).ThenBy(y => y.Id))-->
                         <!--                    {-->
+                        <!-- [(${p.metadata})] -->
                         <div class="nav-item">
-                            <a th:href="${site.baseUrl} + '/' + ${p.metadata.id}" th:class="${#strings.equalsIgnoreCase(page.metadata.id, p.metadata.id)} ? 'active': ''">
+                            <a th:href="${site.siteUrl} + '/' + ${p.metadata.id}" th:class="${#strings.equalsIgnoreCase(page.metadata.id, p.metadata.id)} ? 'active': ''">
                                 [(${p.metadata.title})]
                             </a>
                         </div>
@@ -112,7 +113,7 @@
     <footer>
         <div class="container">
             <div class="footer">
-                <a href="@Globals.Config.GlobalUrl" class="branding"></a>
+                <a th:href="${site.copyrightHolder.url}" th:src="${site.copyrightHolder.logo} != null ? ${site.copyrightHolder.logo}: ${site.cdnUrl} + 'img/' + ${site.id} + '@v1.0/' + ${site.id} + '-logo.svg'" href="/" src="" class="branding"></a>
                 <div class="buildinfo">
                     <div class="container">
                         <p class="engine-name">[(${engine.name})] [(${engine.version})] Build [(${#numbers.formatInteger(engine.versionBuild, 4)})]</p>
@@ -139,7 +140,7 @@
 <th:block th:fragment="scriptBaseFragment">
     <script th:src="${site.cdnUrl} + 'js/cwctma@v4.2.0/app.min.js'"></script>
     <script th:src="${site.cdnUrl} + 'js/bootstrap@v5.1.2/bootstrap.bundle.min.js'"></script>
-    <script th:src="${site.cdnUrl} + 'js/prism@v1.29.0/prism.min.js'" data-manual></script>
+    <script th:src="${site.cdnUrl} + 'js/prism@v1.29.0/prism.min.js'"></script>
 </th:block>
 
 </body>

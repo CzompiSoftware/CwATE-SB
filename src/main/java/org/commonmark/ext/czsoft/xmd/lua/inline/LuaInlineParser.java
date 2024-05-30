@@ -1,5 +1,7 @@
 package org.commonmark.ext.czsoft.xmd.lua.inline;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.commonmark.ext.czsoft.xmd.lua.LuaBlock;
 import org.commonmark.ext.czsoft.xmd.lua.LuaType;
 import org.commonmark.ext.czsoft.xmd.lua.block.LuaBlockParser;
@@ -10,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LuaInlineParser extends AbstractBlockParser {
+    private static Logger LOGGER = LogManager.getLogger(LuaInlineParser.class);
     private final static String BLOCK_START = "@lua{#";
     private final static String BLOCK_END = "#}";
     private static final Pattern LUA_CODE = Pattern
@@ -42,6 +45,7 @@ public class LuaInlineParser extends AbstractBlockParser {
     }
 
     public static class Factory extends AbstractBlockParserFactory {
+        private static Logger LOGGER = LogManager.getLogger(Factory.class);
 
         @Override
         public BlockStart tryStart(ParserState parserState, MatchedBlockParser matchedBlockParser) {
@@ -55,7 +59,7 @@ public class LuaInlineParser extends AbstractBlockParser {
             int col = parserState.getColumn();
             int indent = parserState.getIndent();
             int matchedIndex = Math.max(0, currentLineStr.indexOf(BLOCK_START) + BLOCK_START.length());
-
+            LOGGER.debug(currentLineStr);
             return BlockStart
                     .of(new LuaBlockParser(LuaType.BLOCK, currentLineStr.substring(matchedIndex)))
                     .atColumn(col + indent + matchedIndex);

@@ -2,8 +2,8 @@ package hu.czsoft.cwatesb.controller;
 
 import hu.czsoft.cwatesb.TemplatingEngineApplication;
 import hu.czsoft.cwatesb.SiteTemplateRenderer;
+import hu.czsoft.cwatesb.site.SiteImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.FileSystemResource;
@@ -14,9 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -29,10 +26,10 @@ public class XmdController {
     }
 
     private String processPath(HttpServletRequest request, String path, Model model) {
-        if (TemplatingEngineApplication.SITE.getBaseUrl() == null) {
-            TemplatingEngineApplication.SITE.setBaseUrlFromRequest(request);
+        if (TemplatingEngineApplication.SITE_MANAGER.get().getSiteUrl() == null) {
+            TemplatingEngineApplication.SITE_MANAGER.setBaseUrlFromRequest(request);
         }
-        return SiteTemplateRenderer.renderDecoratedLayout(path, TemplatingEngineApplication.ENGINE, TemplatingEngineApplication.SITE, TemplatingEngineApplication.PAGE_LIST, model);
+        return SiteTemplateRenderer.renderDecoratedLayout(path, TemplatingEngineApplication.ENGINE_MANAGER.get(), SiteImpl.of(TemplatingEngineApplication.SITE_MANAGER.get()), TemplatingEngineApplication.PAGE_MANAGER.get().stream().toList(), model);
     }
 
     @GetMapping("/**.xmd")
@@ -61,8 +58,8 @@ public class XmdController {
 
     @GetMapping(value = "/favicon.ico")
     public ResponseEntity<Resource> handleFavicon(HttpServletRequest request) {
-        if (TemplatingEngineApplication.SITE.getBaseUrl() == null) {
-            TemplatingEngineApplication.SITE.setBaseUrlFromRequest(request);
+        if (TemplatingEngineApplication.SITE_MANAGER.get().getSiteUrl() == null) {
+            TemplatingEngineApplication.SITE_MANAGER.setBaseUrlFromRequest(request);
         }
 //        ClassPathResource classPathResource = new ClassPathResource("static/images/user-default.png");
 //        InputStream in = classPathResource.getInputStream();

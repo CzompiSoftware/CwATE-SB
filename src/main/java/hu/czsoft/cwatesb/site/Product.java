@@ -1,4 +1,4 @@
-package hu.czsoft.cwatesb.model;
+package hu.czsoft.cwatesb.site;
 
 import lombok.Getter;
 import lombok.Setter;

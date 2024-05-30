@@ -1,12 +1,15 @@
-package hu.czsoft.cwatesb.model;
+package hu.czsoft.cwatesb.site;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.net.URL;
 
-@Getter@ToString
+@Getter@Setter
+@ToString
 public class Theme {
+
     private String name;
     private String version;
     private String fileName;

@@ -1,10 +1,7 @@
-package hu.czsoft.cwatesb.model;
+package hu.czsoft.cwatesb.page;
 
-import hu.czsoft.cwatesb.TemplatingEngineApplication;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.util.Comparator;
 
 @Getter
 @ToString
@@ -21,9 +18,9 @@ public class Page implements Comparable<Page> {
 
     private final String content;
 
-    private String hash;
+    private final String hash; //TODO: Implement hash?!
 
-    public static Page parse(Page page, String url) {
+    public static Page of(Page page, String url) {
         if (page.getMetadata().getUrl() == null) {
             page.getMetadata().setUrl(url + "/index.xmd");
         } else {

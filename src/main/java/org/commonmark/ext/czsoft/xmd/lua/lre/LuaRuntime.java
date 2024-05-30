@@ -12,6 +12,8 @@ import net.sandius.rembulan.impl.StateContexts;
 import net.sandius.rembulan.lib.StandardLibrary;
 import net.sandius.rembulan.load.LoaderException;
 import net.sandius.rembulan.runtime.LuaFunction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.commonmark.ext.czsoft.xmd.lua.LuaType;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class LuaRuntime {
+    private static Logger LOGGER = LogManager.getLogger(LuaRuntime.class);
 
     private final CompilerChunkLoader loader;
     private final Table env;
@@ -41,6 +44,7 @@ public class LuaRuntime {
         try {
             main = loader.loadTextChunk(new Variable(env), "lre_" + UUID.randomUUID().toString().split("-")[0], sourceCode);
             result.addAll(List.of(DirectCallExecutor.newExecutor().call(state, main)));
+            LOGGER.debug(main);
 
         } catch (LoaderException | CallException | CallPausedException | InterruptedException e) {
             if(type == LuaType.BLOCK) {
@@ -52,6 +56,7 @@ public class LuaRuntime {
             } else if (type == LuaType.INLINE) {
                 return "???";
             }
+            LOGGER.error(e);
         }
         return result.get(0).toString();
     }
