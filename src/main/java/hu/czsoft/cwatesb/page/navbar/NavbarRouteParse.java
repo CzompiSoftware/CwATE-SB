@@ -27,7 +27,7 @@ public class NavbarRouteParse {
         boolean ltr = true;
         ltr = data.contains(SEPARATOR_LTR);
         var val = recursiveSearch(data, 0, list, ltr);
-        if(ltr) list = list.reversed();
+        //if(ltr) list = list.reversed();
         return recursiveRoute(list, 0, child);
     }
 

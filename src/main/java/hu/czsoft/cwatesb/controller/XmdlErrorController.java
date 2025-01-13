@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.time.LocalDateTime;
 
 @Controller
-public class XmdErrorController implements ErrorController {
+public class XmdlErrorController implements ErrorController {
     Logger _logger = LogManager.getLogger(this);
 
     @RequestMapping("/error")
