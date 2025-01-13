@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
@@ -82,7 +83,7 @@ public class TemplatingEngineApplication {
 	private static void preConfig() {
 		// Load engine manager
 		try {
-			ENGINE_MANAGER.load();
+			ENGINE_MANAGER.load(new ClassPathResource("META-INF/MANIFEST.MF", TemplatingEngineApplication.class.getClassLoader()).getInputStream());
 		} catch (IOException e) {
 			LOGGER.warn(e);
 		}
