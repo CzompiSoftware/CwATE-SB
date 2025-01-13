@@ -1,0 +1,1 @@
+docker compose down && docker rmi cwate-sb -f && docker compose up -d

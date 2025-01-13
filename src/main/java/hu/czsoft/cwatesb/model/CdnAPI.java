@@ -10,7 +10,7 @@ public class CdnAPI {
 
     /**
      * @param loc Relative file location
-     * @return Full path of the package with cdn url.
+     * @return Full path parse the package with cdn url.
      */
     public static String renderUrl(String loc)
     {

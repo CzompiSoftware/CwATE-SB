@@ -1,0 +1,31 @@
+package hu.czsoft.xmdl;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * PreviewImage property parse Metadata.
+ */
+@Getter@Setter@ToString
+public final class Image
+{
+    /**
+     * Image description
+     */
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JacksonXmlProperty(isAttribute = true)
+    private String alt;
+
+    /**
+     * Image link
+     */
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JacksonXmlText
+    private String value;
+}

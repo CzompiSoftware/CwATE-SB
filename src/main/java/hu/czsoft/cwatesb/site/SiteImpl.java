@@ -1,6 +1,8 @@
 package hu.czsoft.cwatesb.site;
 
 import com.google.gson.annotations.Expose;
+import hu.czsoft.cdn.AtomicTheme;
+import hu.czsoft.cdn.Theme;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter @ToString
-public class SiteImpl implements Site {
+public final class SiteImpl implements Site {
     private static final Logger LOGGER = LogManager.getLogger(Site.class);
 
     private String id;
@@ -35,7 +37,7 @@ public class SiteImpl implements Site {
     private List<Theme> themes = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
-    private List<String> styles = new ArrayList<>();
+    private List<AtomicTheme> styles = new ArrayList<>();
 
 
     public SiteImpl() {

@@ -1,16 +1,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="page" type="hu.czsoft.xmdl.Page"*/-->
+<!--/*@thymesVar id="site" type="hu.czsoft.cwatesb.site.SiteImpl"*/-->
+<!--/*@thymesVar id="engine" type="hu.czsoft.web.engine.Engine"*/-->
+<!--/*@thymesVar id="pageList" type="java.util.List<hu.czsoft.xmdl.Page>"*/-->
+
 <head>
     <th:block th:fragment="headBaseFragment">
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <th:block th:each="theme : ${site.styles}">
-        <link rel="stylesheet" th:href="${theme}"/>
+        <!--/*@thymesVar id="style" type="hu.czsoft.cwatesb.site.Theme"*/-->
+        <th:block th:each="style : ${site.styles}"><link rel="stylesheet" th:href="${style.url}" th:media="${style.media}"/>
         </th:block>
-        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/fluent-icons@v1.0.0/all.css'">
-        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.css'">
-        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.light.css'" media="(prefers-color-scheme: light)">
-        <link rel="stylesheet" th:href="${site.cdnUrl} + 'css/prism@v1.29.0/prism.dark.css'" media="(prefers-color-scheme: dark)">
 
         <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -68,7 +69,8 @@
     <!-- #region Czompi Group products -->
     <nav class="nav nav-sticky group" aria-label="Czompi Group">
         <div class="container w-100">
-            <th:block th:each="group: ${site.products}">
+            <!--/*@thymesVar id="group" type="hu.czsoft.cwatesb.site.Product"*/-->
+            <th:block th:each="group : ${site.products}">
                 <div th:if="${group.id} == ${site.id}" th:class="'nav-item group-' + ${group.id}">
                     <span class="active" th:text="${group.name}"/>
                 </div>
@@ -87,21 +89,19 @@
             </a>
             <a class="nav-mobile" href="#" role="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation"></a>
             <div class="nav-items dropdown-menu navbar-collapse collapse" aria-labelledby="navbar-main" id="navbar-main">
+                <!--/*@thymesVar id="p" type="hu.czsoft.xmdl.Page"*/-->
                 <th:block th:each="p : ${pageList}">
                     <th:block th:if="${p.metadata.isNavMenuItem}">
-                        <!--                    @foreach (Metadata page in Globals.Pages.Select(itm =>-->
-                        <!--                    {-->
-                        <!--                    if (itm.NavMenuId == -1) itm.NavMenuId = short.Parse($"{Math.Min(Globals.Pages.Max(x => x.NavMenuId) + Globals.Pages.Count, (int)short.MaxValue)}");-->
-                        <!--                    return itm;-->
-                        <!--                    }).Where(x => x.IsNavMenuItem == true).OrderBy(x => x.NavMenuId).ThenBy(y => y.Id))-->
-                        <!--                    {-->
                         <!-- [(${p.metadata})] -->
                         <div class="nav-item">
-                            <a th:href="${site.siteUrl} + '/' + ${p.metadata.id}" th:class="${#strings.equalsIgnoreCase(page.metadata.id, p.metadata.id)} ? 'active': ''">
-                                [(${p.metadata.title})]
-                            </a>
-                        </div>
-                    </th:block>
+                            <th:block th:unless="${#strings.equalsIgnoreCase(page.metadata.id, p.metadata.id)}">
+                                <a th:href="${site.siteUrl} + '/' + ${p.metadata.id}">
+                                    [(${p.metadata.title})]
+                                </a></th:block><th:block th:if="${#strings.equalsIgnoreCase(page.metadata.id, p.metadata.id)}">
+                                <span class="active">
+                                    [(${p.metadata.title})]
+                                </span></th:block>
+                        </div></th:block>
                 </th:block>
             </div>
         </nav>
@@ -117,7 +117,7 @@
                 <div class="buildinfo">
                     <div class="container">
                         <p class="engine-name">[(${engine.name})] [(${engine.version})] Build [(${#numbers.formatInteger(engine.versionBuild, 4)})]</p>
-<!--                        @*<p class="engine-fullname" th:text="${engine.fullName} + ' Version ' + ${engine.version} + ' Build ' + ${#numbers.formatInteger(engine.versionBuild, 4)}">Czompi Software product written in Spring Boot Version 0.0 Build 0000</p>*@-->
+                        <!--     @*<p class="engine-fullname" th:text="${engine.fullName} + ' Version ' + ${engine.version} + ' Build ' + ${#numbers.formatInteger(engine.versionBuild, 4)}">Czompi Software product written in Spring Boot Version 0.0 Build 0000</p>*@-->
                         <p class="version-id">[(${engine.build})]</p>
                         <p class="build-date">[(${engine.compileTime})]</p>
                     </div>

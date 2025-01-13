@@ -1,11 +1,12 @@
 package hu.czsoft.cwatesb.controller;
 
+import hu.czsoft.cwatesb.ControllerVariables;
+import hu.czsoft.cwatesb.SiteLayoutRenderer;
 import hu.czsoft.cwatesb.TemplatingEngineApplication;
-import hu.czsoft.cwatesb.SiteTemplateRenderer;
-import hu.czsoft.cwatesb.site.SiteImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -19,17 +20,27 @@ import java.nio.file.Path;
 
 @Controller
 public class XmdController {
+    private final ControllerVariables controllerVariables;
+    private final SiteLayoutRenderer layoutRenderer;
+
     Logger logger = LogManager.getLogger(XmdController.class);
+
+    @Autowired
+    public XmdController(ControllerVariables controllerVariables, SiteLayoutRenderer layoutRenderer) {
+        this.controllerVariables = controllerVariables;
+        this.layoutRenderer = layoutRenderer;
+    }
+
     @GetMapping("/")
     public String handleIndex(HttpServletRequest request, Model model) {
         return processPath(request, "index.xmd", model);
     }
 
     private String processPath(HttpServletRequest request, String path, Model model) {
-        if (TemplatingEngineApplication.SITE_MANAGER.get().getSiteUrl() == null) {
-            TemplatingEngineApplication.SITE_MANAGER.setBaseUrlFromRequest(request);
+        if (controllerVariables.getSite().get().getSiteUrl() == null) {
+            controllerVariables.getSite().setBaseUrlFromRequest(request);
         }
-        return SiteTemplateRenderer.renderDecoratedLayout(path, TemplatingEngineApplication.ENGINE_MANAGER.get(), SiteImpl.of(TemplatingEngineApplication.SITE_MANAGER.get()), TemplatingEngineApplication.PAGE_MANAGER.get().stream().toList(), model);
+        return layoutRenderer.renderDecoratedLayout(path, model);
     }
 
     @GetMapping("/**.xmd")
@@ -58,8 +69,8 @@ public class XmdController {
 
     @GetMapping(value = "/favicon.ico")
     public ResponseEntity<Resource> handleFavicon(HttpServletRequest request) {
-        if (TemplatingEngineApplication.SITE_MANAGER.get().getSiteUrl() == null) {
-            TemplatingEngineApplication.SITE_MANAGER.setBaseUrlFromRequest(request);
+        if (controllerVariables.getSite().get().getSiteUrl() == null) {
+            controllerVariables.getSite().setBaseUrlFromRequest(request);
         }
 //        ClassPathResource classPathResource = new ClassPathResource("static/images/user-default.png");
 //        InputStream in = classPathResource.getInputStream();

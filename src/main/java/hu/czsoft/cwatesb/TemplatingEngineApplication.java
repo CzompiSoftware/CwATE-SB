@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import hu.czsoft.cwatesb.engine.EngineManager;
+import hu.czsoft.web.engine.EngineManager;
 import hu.czsoft.cwatesb.page.PageCollectionManager;
 import hu.czsoft.cwatesb.site.SiteManager;
+import hu.czsoft.xmdl.XmdlDocument;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
@@ -25,10 +26,10 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class TemplatingEngineApplication {
+
 	// it's important to initialize the OpenTelemetry SDK as early in your applications lifecycle as
 	// possible.
 	private static final OpenTelemetry openTelemetry = initOpenTelemetry();
-
 	private static OpenTelemetry initOpenTelemetry() {
 		SdkTracerProvider sdkTracerProvider =
 				SdkTracerProvider.builder()
@@ -54,11 +55,11 @@ public class TemplatingEngineApplication {
 	public static final String TRANSLATION_DIRECTORY = WORKING_DIRECTORY + "translation/";
 
 
-	public static XmlMapper XML_MAPPER;
-
-	public static final PageCollectionManager PAGE_MANAGER = new PageCollectionManager();
+	public static final XmlMapper XML_MAPPER = configureXmlMapper();
+	public static final XmdlDocument XMDL_DOCUMENT = new XmdlDocument(XML_MAPPER);
 	public static final EngineManager ENGINE_MANAGER = new EngineManager();
 	public static final SiteManager SITE_MANAGER = new SiteManager(ENGINE_MANAGER);
+	public static final PageCollectionManager PAGE_MANAGER = new PageCollectionManager(SITE_MANAGER, XMDL_DOCUMENT);
 
 	public TemplatingEngineApplication() {
 	}
@@ -79,9 +80,6 @@ public class TemplatingEngineApplication {
 	}
 
 	private static void preConfig() {
-		// Configure Xml mapper
-		configureXmlMapper();
-
 		// Load engine manager
 		try {
 			ENGINE_MANAGER.load();
@@ -97,21 +95,23 @@ public class TemplatingEngineApplication {
 		}
 
 		// Load page manager
-		PAGE_MANAGER.clear();
-		PAGE_MANAGER.addRange(XmdlParser.getInstance().enumeratePages(CONTENT_DIRECTORY));
-
+		try {
+			PAGE_MANAGER.load(CONTENT_DIRECTORY);
+		} catch (IOException e) {
+			LOGGER.warn(e);
+		}
 	}
 
-	private static void configureXmlMapper() {
-		XML_MAPPER = new XmlMapper();
-		XML_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		XML_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		XML_MAPPER.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-		XML_MAPPER.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-		XML_MAPPER.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-		XML_MAPPER.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
-		XML_MAPPER.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_VALUES, true);
-		XML_MAPPER.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+	private static XmlMapper configureXmlMapper() {
+		return XmlMapper.builder()
+				.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+				.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+				.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
+				.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+				.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+				.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_VALUES, true)
+				.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false).build();
 	}
 
 }

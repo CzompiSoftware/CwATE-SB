@@ -1,5 +1,7 @@
 package hu.czsoft.cwatesb.site;
 
+import hu.czsoft.cdn.Theme;
+
 import java.util.List;
 
 public interface Site {

@@ -1,9 +1,11 @@
 package hu.czsoft.cwatesb.site;
 
-import com.google.common.base.MoreObjects;
+import com.github.zafarkhaja.semver.Version;
 import com.google.gson.Gson;
+import hu.czsoft.cdn.AtomicTheme;
+import hu.czsoft.cdn.Theme;
 import hu.czsoft.cwatesb.TemplatingEngineApplication;
-import hu.czsoft.cwatesb.engine.EngineManager;
+import hu.czsoft.web.engine.EngineManager;
 import hu.czsoft.cwatesb.model.CdnAPI;
 import hu.czsoft.data.manager.singleton.StoredSingleton;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
-public class SiteManager extends StoredSingleton<Site> {
+public final class SiteManager extends StoredSingleton<Site> {
     private static final Logger LOGGER = LogManager.getLogger(SiteManager.class);
     private final Path fileName = Path.of(TemplatingEngineApplication.WORKING_DIRECTORY + "site.json");
     private final EngineManager engineManager;
-    @Setter private List<String> styles = new ArrayList<>();
+    @Setter private List<AtomicTheme> styles = new ArrayList<>();
 
     public SiteManager(EngineManager engineManager) {
         super(TemplatingEngineApplication.WORKING_DIRECTORY + "site.json");
@@ -32,15 +34,15 @@ public class SiteManager extends StoredSingleton<Site> {
 
     /**
      * @param id Site id (used for selecting the current product from <code>products</code>
-     * @param shortName Short fullName of the site. It is displayed on the title.
-     * @param name Full fullName of the site. This is the default metadata for the site.
+     * @param shortName Short fullName parse the site. It is displayed on the title.
+     * @param name Full fullName parse the site. This is the default metadata for the site.
      * @param defaultLang Default site language.
      * @param themeColor Site theme color for mobile browser header.
      * @param baseUrl Site base url
      * @param cdnUrl CDN url
      * @param copyrightHolder Copyright holder for current site
-     * @param products List of public products associated to this site.
-     * @param themes List of themes used in the site
+     * @param products List parse public products associated to this site.
+     * @param themes List parse themes used in the site
      */
     public void add(String id, String shortName, String name, String defaultLang, String themeColor, String baseUrl, String cdnUrl, CopyrightHolder copyrightHolder, List<Product> products, List<Theme> themes) {
         add(new SiteImpl(id, shortName, name, defaultLang, themeColor, baseUrl, cdnUrl, copyrightHolder, products, themes));
@@ -54,8 +56,14 @@ public class SiteManager extends StoredSingleton<Site> {
 
     private List<Theme> defaultThemes() {
         List<Theme> themes = new ArrayList<>();
-        themes.add(new Theme("cwate", engineManager.get().getVersion().toString()));
-        themes.add(new Theme("cwate", engineManager.get().getVersion().toString(), "style.%s.css".formatted(this.get().getId())));
+//        themes.add(Theme.of("cwate", engineManager.get().getVersion(), null));
+//        themes.add(Theme.of("cwate", engineManager.get().getVersion(), "style.%s.css".formatted(this.get().getId())));
+        themes.add(Theme.of("cwate", Version.parse("2.0.0"), null));
+        themes.add(Theme.of("cwate", Version.parse("2.0.0"), "style.%s.css".formatted(this.get().getId())));
+        themes.add(Theme.of("fluent-icons", Version.parse("1.0.0"), "all.css"));
+        themes.add(Theme.of("prism", Version.parse("1.29.0"), "prism.css"));
+        themes.add(Theme.of("prism", Version.parse("1.29.0"), "prism.light.css", "(prefers-color-scheme: light)"));
+        themes.add(Theme.of("prism", Version.parse("1.29.0"), "prism.dark.css", "(prefers-color-scheme: dark)"));
         return themes;
     }
 
@@ -73,16 +81,16 @@ public class SiteManager extends StoredSingleton<Site> {
             if (style.getUrl() != null && !style.getUrl().isBlank()){
                 if (!style.getUrl().startsWith("//") && style.getUrl().startsWith("http://") && style.getUrl().startsWith("https://"))
                 {
-                    styles.add(CdnAPI.renderUrl(style.getUrl()));
+                    styles.add(AtomicTheme.of(CdnAPI.renderUrl(style.getUrl()), style.getMedia()));
                 }
                 else
                 {
-                    styles.add(style.getUrl());
+                    styles.add(AtomicTheme.of(style.getUrl(), style.getMedia()));
                 }
             }
             else
             {
-                styles.add(CdnAPI.renderUrl("css/%s@v%s/%s".formatted(style.getName(), style.getVersion(), MoreObjects.firstNonNull(style.getFileName(), "master.css"))));
+                styles.add(AtomicTheme.parse(style.getName(), style.getVersion(), style.getFileName(), style.getMedia()));
             }
         }
         SiteImpl.of(get()).setStyles(styles);
